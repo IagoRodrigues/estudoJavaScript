@@ -1,0 +1,191 @@
+Variaveis------------------------------------------------------------------------------------------
+
+let-> limitada ao escopo de bloco
+var-> variavel global
+const-> uma vez atribuido valor, nao muda mais
+
+Operadores-----------------------------------------------------------------------------------------
+
+Operador de igualdade eh ===, nao ==
+
+Funcoes--------------------------------------------------------------------------------------------
+
+Declaracao---
+function multiplica(num1,num2) {
+  let resultado = num1 * num2;
+  return resultado;
+}
+
+Chamada---
+multiplica(4, 7);
+
+Eventos--------------------------------------------------------------------------------------------
+
+onclick é um evento, podemos ir para o documento, selecionar o campo html e dizer que ao clique ele
+deve executar uma funcao:
+
+document.querySelector('html').onclick = function() {
+    alert('Ai! Pare de me cutucar!');
+}
+
+é possivel fazer tudo junto (como o mostrado) ou fazer por partes:
+
+let meuHTML = document.querySelector('html');
+
+meuHTML.onclick = function() {
+    alert('Ai! Pare de me cutucar!');
+};
+
+Objetos--------------------------------------------------------------------------------------------
+
+Dentro da tag script no html:
+
+var pessoa = {
+  nome: ['Bob', 'Smith'],
+  idade: 32,
+  sexo: 'masculino',
+  interesses: ['música', 'esquiar'],
+  bio: function() {
+    alert(this.nome[0] + ' ' + this.nome[1] + ' tem ' + this.idade + ' anos de idade. 
+    Ele gosta de ' + this.interesses[0] + ' e ' + this.interesses[1] + '.');
+  },
+  saudacao: function() {
+    alert('Oi! Eu sou ' + this.nome[0] + '.');
+  }
+};
+
+Dentro do console JavaScript devtools do navegador, testar:
+
+pessoa.nome
+pessoa.nome[0]
+pessoa.idade
+pessoa.interesses[1]
+pessoa.bio()
+pessoa.saudacao()
+
+Um objeto eh composto por nome, membros e valores:
+
+var nomeDoObjeto = {
+  nomeMembro1: valorMembro1,
+  nomeMembro2: valorMembro2,
+  nomeMembro3: valorMembro3
+};
+
+Assim como em java onde temos atributos e metodos. Os objetos podem ser literais
+ou instanciados por uma classe. Objetos literais (como o que criamos acima) geral
+mente sao montados e usados pra tranferir uma quantidade de dados, afinal eh melhor
+mandar um objeto que varias infos pro banco.
+
+Para acessar dados fazemos como no java:
+
+Quando temos "nome: ['Bob', 'Smith']" e queremos o primeiro nome:
+pessoa.nome[0]
+
+Quando temos
+
+nome : {
+    primeiro: 'Bob',
+    ultimo: 'Smith'
+}
+
+e queremos o primeiro nome:
+pessoa.nome.primeiro
+
+Notacao de colchetes-------------------------------------------------------------------------------
+
+Em vez de:
+pessoa.idade
+pessoa.nome.primeiro
+
+podemos fazer:
+pessoa['idade']
+pessoa['nome']['primeiro']
+
+Uma vez que objetos são arrays associativos
+
+Setar informacoes----------------------------------------------------------------------------------
+
+podemos adicionar valores e metodos nos objetos:
+
+pessoa.idade = 45;
+pessoa['nome']['ultimo'] = 'Cratchit';
+pessoa.despedida = function() { alert( "Adeus a todos!" ); }
+
+Usando sintaxe de colchetes é possível receber uma string e criar um novo membro (novo atributo)
+a partir da string recebida:
+
+var myDataName = nameInput.value; //crio uma var chamada myDataName e recebo um nome pra ela
+var myDataValue = nameValue.value; //crio uma var chamada myDataValue e recebo um valor pra ela
+pessoa[myDataName] = myDataValue; //crio um atributo para pessoa com o nome recebido e atribuo 
+o valor recebido
+
+Construtores---------------------------------------------------------------------------------------
+
+Os contrutores sao como em java:
+
+No html dentro da tag script:
+
+function createNewPerson(name) {
+  var obj = {};
+  obj.name = name;
+  obj.greeting = function() {
+    alert('Hi! I\'m ' + obj.name + '.');
+  };
+  return obj;
+}
+
+Definimos a funcao createNewPerson recebendo um nome, essa funcao cria um objeto vazio, 
+define um atributo chamado name, define um metodo chamado greeting e retorna o obj
+criado.
+
+No console:
+
+var salva = createNewPerson('Salva');
+salva.name;
+salva.greeting();
+
+Crio a var Salva chamando o metodo createNewPerson e passando um nome, a funcao retorna o
+obj criado para dentro de var salva, a partir daih posso usar tranquilamente esse objeto.
+
+Eh possivel criar uma funcao construtora da seguinte forma:
+
+function Person(name) {
+  this.name = name;
+  this.greeting = function() {
+    alert('Hi! I\'m ' + this.name + '.');
+  };
+}
+
+O construtor deve ser iniciado com letra maiuscula e dele podemos fazer:
+
+var person1 = new Person('Bob');
+var person2 = new Person('Sarah');
+
+Contrutor object()---------------------------------------------------------------------------------
+
+Isso armazena um obj vazio na memoria:
+
+var person1 = new Object();
+
+Ai podemos adicionar coisas a esse obj:
+
+person1.name = 'Chris';
+person1['age'] = 38;
+person1.greeting = function() {
+  alert('Hi! I\'m ' + this.name + '.');
+};
+
+Eh possivel criar um obj vazio e preenche-lo:
+
+var person1 = new Object({
+  name: 'Chris',
+  age: 38,
+  greeting: function() {
+    alert('Hi! I\'m ' + this.name + '.');
+  }
+});
+
+Eh possivel criar um obj a partir de outro, crio um obj chamado person1 e o objeto person2 
+sera um clone de person1:
+
+var person2 = Object.create(person1);
