@@ -310,7 +310,7 @@ nao do original, e a soma dara 7!
 Heranca--------------------------------------------------------------------------------------------
 
 Crio uma funcao SalaAula que recebe um array de alunos e salva esse array na propriedade
-da classe d
+da classe
   function SalaAula(alunos){
     this.alunos = alunos || [];
   }
@@ -344,6 +344,260 @@ Que eh o mesmo que
   NovaSala extends SalaAula
 
 E isso funciona pela heranca:
-  novaSala.adicionarAluno('João')
+  novaSala.adicionarAluno('Joao')
 
-  
+Grande exemplo:
+
+Quero uma classe Teacher que eh Person, entao:
+
+Person tem como propriedade nome, sobrenome, idade, genero e interesses. 
+Uma Person pode dizer Oi (greeting()), dar tchau (farewell()) e 
+se apresentar (bio())
+
+Teacher tem tudo isso, mais a propriedade subject que eh o assunto ensinado
+e o metodo greeting atualizado (mais formal)
+
+Para construir Person:
+
+function Person(first, last, age, gender, interests) {
+  this.name = {first, last};
+  this.age = age;
+  this.gender = gender;
+  this.interests = interests;
+};
+
+Person.prototype.greeting = function() {
+  alert('Hi! I\'m ' + this.name.first + '.');
+};
+
+Person.prototype.greeting = function() {
+  alert('Hi! I\'m ' + this.name.first + '.');
+};
+
+Person.prototype.farewell = function() {
+  alert(this.name.first + ' has left the building. Bye for now!');
+}
+
+Para construir Teacher SEM heranca:
+
+function Teacher(first, last, age, gender, interests, subject) {
+  this.name = {first, last};
+  this.age = age;
+  this.gender = gender;
+  this.interests = interests;
+  this.subject = subject;
+}
+
+Para construir Teacher COM heranca:
+
+function Teacher(first, last, age, gender, interests, subject) {
+  Person.call(this, first, last, age, gender, interests);
+
+  this.subject = subject;
+}
+
+A funcao call() basicamente permite chamar uma funcao definida em outro lugar, mas no
+contexto atual. O primeiro parâmetro especifica o valor this que você deseja usar ao
+executar a funcao, e os outros parâmetros sao aqueles que devem ser passados para a funcao
+quando ela é invocada. Nós queremos que o construtor Teacher() pegue os mesmos parâmetros 
+que o construtor Person() de onde ele está herdando, então especificamos todos eles como 
+parâmetros na chamada call().
+
+A última linha dentro do construtor simplesmente define a nova propriedade subject que os 
+professores terão, que pessoas genéricas nao possuem.
+
+Agora precisamos obter Teacher para herdar os metodos definidos em Person, para isso
+fazemos:
+
+Teacher.prototype = Object.create(Person.prototype);
+
+quando faco Object.create(Person.prototype) eu estou criando um novo objeto que possui
+Person.prototype como seu prototipo, ai salvo esse novo objeto como prototipo de Teacher
+isso liga Person e Teacher.
+
+IMPORTANTE:
+
+Se chamarmos o construtor de Teacher.prototype teremos Person. Teacher herda de Person, mas
+possui seu proprio construtor, para corrigir isso:
+
+Object.defineProperty(Teacher.prototype, 'constructor', { 
+    value: Teacher, 
+    enumerable: false, // so that it does not appear in 'for in' loop
+    writable: true });
+
+ Teacher.prototype.constructor deve retornar Teacher(), conforme desejado, 
+ alem de estarmos herdando de Person()
+
+Outro exemplo:
+
+Tijolo:
+
+function Brick() {
+  this.width = 10;
+  this.height = 20;
+}
+
+Tijolo de vidro azul:
+
+function BlueGlassBrick() {
+  Brick.call(this);
+
+  this.opacity = 0.5;
+  this.color = 'blue';
+}
+
+Caso a classe pai nao tenha propriedades, a classe filha so passa this e institui
+suas proprias.
+
+Seguindo o exemplo:
+
+Para finalizar nosso codigo, precisamos definir uma nova funcao greeting()
+no construtor Teacher():
+
+Teacher.prototype.greeting = function() {
+  var prefix;
+
+  if (this.gender === 'male' || this.gender === 'Male' || this.gender === 'm' || this.gender === 'M') {
+    prefix = 'Mr.';
+  } else if (this.gender === 'female' || this.gender === 'Female' || this.gender === 'f' || this.gender === 'F') {
+    prefix = 'Mrs.';
+  } else {
+    prefix = 'Mx.';
+  }
+
+  alert('Hello. My name is ' + prefix + ' ' + this.name.last + ', and I teach ' + this.subject + '.');
+};
+
+A classe student fica:
+
+function Student(first, last, age, gender, interests) {
+  Person.call(this, first, last, age, gender, interests);
+}
+
+Student.prototype = Object.create(Person.prototype);
+Student.prototype.constructor = Student;
+
+Student.prototype.greeting = function() {
+  alert('Yo! I\'m ' + this.name.first + '.');
+};
+
+RESUMIDAMENTE, SERIO, QUE LOUCURA:
+
+basicamente tem tres tipos de propriedade / metodo para se preocupar:
+
+Aqueles definidos dentro de uma funcao construtora que sao dadas a instancias de objetos. 
+Estes sao bastante faceis de detectar — em seu proprio codigo personalizado, eles sao os membros
+definidos dentro de um construtor usando as linhas this.x = x ; no codigo do navegador, eles sao 
+os membros disponiveis apenas para instancias de objetos (geralmente criados chamando um construtor 
+usando a palavra-chave new, por exemplo, var myInstance = new myConstructor()).
+
+Aqueles definidos diretamente no proprio construtor, que estao disponiveis apenas no construtor. 
+Geralmente, eles estao disponiveis apenas em objetos de navegador internos e sao reconhecidos por 
+serem encadeados diretamente em um construtor, nao em uma instancia. Por exemplo, Object.keys().
+
+Aqueles definidos no prototipo de um construtor, que sao herdados por todas as instancias e herdam
+as classes de objetos. Estes incluem qualquer membro definido na propriedade de prototipo de um 
+Construtor, por ex. myConstructor.prototype.x().
+
+MEU DEUS TEM UM JEITO ABSURDAMENTE MAIS FACIL:
+CLASSES ECMASCRIPT 2015
+
+VIRA JAVA VEI
+
+Classes com notacao ECMAScript 2015:
+
+class Person {
+  constructor(first, last, age, gender, interests) { //O metodo constructor() define a funcao construtora que representa nossa classe Person.
+    this.name = {
+      first,
+      last
+    };
+    this.age = age;
+    this.gender = gender;
+    this.interests = interests;
+  }
+
+  greeting() {
+    console.log(`Hi! I'm ${this.name.first}`);
+  };
+
+  farewell() {
+    console.log(`${this.name.first} has left the building. Bye for now!`);
+  };
+}
+
+greeting() e farewell() sao metodos de classe. Quaisquer metodos que voce deseja
+associar a classe sao definidos dentro dela, apos o construtor. Neste exemplo, usamos
+template literals em vez de concatenacao de string para facilitar a leitura do código.
+
+Para instanciar:
+
+let han = new Person('Han', 'Solo', 25, 'male', ['Smuggling']);
+han.greeting();
+// Hi! I'm Han
+
+let leia = new Person('Leia', 'Organa', 19, 'female', ['Government']);
+leia.farewell();
+// Leia has left the building. Bye for now
+
+Heranca:
+
+class Teacher extends Person {
+  constructor(first, last, age, gender, interests, subject, grade) {
+    this.name = {
+      first,
+      last
+    };
+
+  this.age = age;
+  this.gender = gender;
+  this.interests = interests;
+  // subject and grade are specific to Teacher
+  this.subject = subject;
+  this.grade = grade;
+  }
+}
+
+ainda eh possivel usar super():
+
+class Teacher extends Person {
+  constructor(first, last, age, gender, interests, subject, grade) {
+    super(first, last, age, gender, interests);
+
+    // subject and grade are specific to Teacher
+    this.subject = subject;
+    this.grade = grade;
+  }
+}
+
+E usar getters e setters:
+
+class Teacher extends Person {
+  constructor(first, last, age, gender, interests, subject, grade) {
+    super(first, last, age, gender, interests);
+    // subject and grade are specific to Teacher
+    this._subject = subject;
+    this.grade = grade;
+  }
+
+  get subject() {
+    return this._subject;
+  }
+
+  set subject(newSubject) {
+    this._subject = newSubject;
+  }
+}
+
+Usamos _  para criar um valor separado no qual armazenar nossa propriedade,
+sem usar essa convencao, obteriamos erros toda vez que chamassemos get ou set.
+
+Em uso:
+// Check the default value
+console.log(snape.subject) // Returns "Dark arts"
+
+// Change the value
+snape.subject="Balloon animals" // Sets _subject to "Balloon animals"
+
+// Check it again and see if it matches the new value
+console.log(snape.subject) // Returns "Balloon animals"
