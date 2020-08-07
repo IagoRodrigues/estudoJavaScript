@@ -21,14 +21,14 @@ multiplica(4, 7);
 
 Eventos--------------------------------------------------------------------------------------------
 
-onclick é um evento, podemos ir para o documento, selecionar o campo html e dizer que ao clique ele
+onclick eh um evento, podemos ir para o documento, selecionar o campo html e dizer que ao clique ele
 deve executar uma funcao:
 
 document.querySelector('html').onclick = function() {
     alert('Ai! Pare de me cutucar!');
 }
 
-é possivel fazer tudo junto (como o mostrado) ou fazer por partes:
+eh possivel fazer tudo junto (como o mostrado) ou fazer por partes:
 
 let meuHTML = document.querySelector('html');
 
@@ -44,7 +44,7 @@ var pessoa = {
   nome: ['Bob', 'Smith'],
   idade: 32,
   sexo: 'masculino',
-  interesses: ['música', 'esquiar'],
+  interesses: ['musica', 'esquiar'],
   bio: function() {
     alert(this.nome[0] + ' ' + this.nome[1] + ' tem ' + this.idade + ' anos de idade. 
     Ele gosta de ' + this.interesses[0] + ' e ' + this.interesses[1] + '.');
@@ -72,8 +72,8 @@ var nomeDoObjeto = {
 };
 
 Assim como em java onde temos atributos e metodos. Os objetos podem ser literais
-ou instanciados por uma classe. Objetos literais (como o que criamos acima) geral
-mente sao montados e usados pra tranferir uma quantidade de dados, afinal eh melhor
+ou instanciados por uma classe. Objetos literais (como o que criamos acima) geralmente 
+sao montados e usados pra tranferir uma quantidade de dados, afinal eh melhor
 mandar um objeto que varias infos pro banco.
 
 Para acessar dados fazemos como no java:
@@ -101,7 +101,7 @@ podemos fazer:
 pessoa['idade']
 pessoa['nome']['primeiro']
 
-Uma vez que objetos são arrays associativos
+Uma vez que objetos sao arrays associativos
 
 Setar informacoes----------------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ pessoa.idade = 45;
 pessoa['nome']['ultimo'] = 'Cratchit';
 pessoa.despedida = function() { alert( "Adeus a todos!" ); }
 
-Usando sintaxe de colchetes é possível receber uma string e criar um novo membro (novo atributo)
+Usando sintaxe de colchetes eh possivel receber uma string e criar um novo membro (novo atributo)
 a partir da string recebida:
 
 var myDataName = nameInput.value; //crio uma var chamada myDataName e recebo um nome pra ela
@@ -145,7 +145,7 @@ salva.name;
 salva.greeting();
 
 Crio a var Salva chamando o metodo createNewPerson e passando um nome, a funcao retorna o
-obj criado para dentro de var salva, a partir daih posso usar tranquilamente esse objeto.
+obj criado para dentro de var salva, a partir dai posso usar tranquilamente esse objeto.
 
 Eh possivel criar uma funcao construtora da seguinte forma:
 
@@ -189,3 +189,161 @@ Eh possivel criar um obj a partir de outro, crio um obj chamado person1 e o obje
 sera um clone de person1:
 
 var person2 = Object.create(person1);
+
+Prototipos-----------------------------------------------------------------------------------------
+
+Prototipos sao a heranca em Javascript.
+
+Tudo em Javascript eh objeto, e todo objeto em Javascript tem uma propriedade
+__proto__ que eh um link para seu prototipo, a cadeia funciona assim:
+
+meuObj.__proto__ --> Object.prototype --> null
+
+Se o objeto eh um array:
+
+meuArray.__proto__ --> Array.prototype --> Object.prototype --> null
+
+E assim por diante...
+
+meuArray terah os metodos proprios, os metodos de Array e de Object...
+
+caso eu chame uma funcao que nao exista em meuArray, o JavaScript vai buscando mais e
+mais fundo na cadeia de prototipos (prototype chain). Ateh chegar em null (nesse caso darah)
+erro, uma vez que null eh o ultimo elo da corrente
+
+Nem todos os metodos de Object sao herdados por meuObj, para selecionar os que sao herdados
+usamos a propriedade prototype
+
+Os metodos comecados com Object.prototype serao herdados.
+
+Criamos a classe Caneta, a partir dela instanciamos caneta1 e caneta2, se eu criar o metodo
+sublinhar em caneta1, só ela podera sublinar coisas, mas se eu fizer:
+
+Caneta.prototype.sublinhar = function() {
+  alert('Texto sublinhado');
+};
+
+Tanto caneta1 quanto caneta2 terao o metodo sublinhar, pois a "classe pai" adicionou esse metodo
+na cadeia de prototipos
+
+Quando escrevemos uma Classe, uma boa pratica eh definir atributos no construtor e metodos
+no prototipo:
+
+  function Caneta(a, b, c){
+    this a= a;
+    this b= b;
+    this c= c;
+  }
+
+  Caneta.prototype.tampar = function(){
+    if (!this.tampada) {
+      alert('Caneta tampada!');
+      this.tampada = true;
+    } else {
+      alert('Ja esta tampada!');
+    }
+  }
+
+Outro exemplo:
+
+  function SalaAula(alunos){
+    this.alunos = alunos;
+  }
+
+  SalaAula.prototype = {
+    adicionarAluno: function(aluno){
+      this.alunos.push(aluno)
+    }
+  }
+
+const minhaSala = new SalaAula(['Joao', 'Maria'])
+minhaSala.adicionarAluno('Pedro')
+
+Como o JavaScript vai escalando a prototype chain ateh achar o metodo que inserimos, 
+longas correntes de objetos podem gerar problemas de performance, sendo assim eh interessante
+nao permitir cadeias tao longas.
+
+Para ajudar existe a funcao hasOwnProperty que recebe uma propriedade e retorna true se o
+objeto possui aquela propriedade no seu prototipo ou false se nao possui, por exemplo:
+
+const meuObjeto = {
+  a: 1,
+  b: 2
+}
+
+meuObjeto.hasOwnProperty('a') retorna true
+
+meuObjeto.hasOwnProperty('map') retorna false pq map eh de Object
+
+Create---------------------------------------------------------------------------------------------
+
+Construo um objeto com a===1 e b===2:
+const meuObjeto = {
+  a: 1,
+  b: 2
+}
+
+Passo esse objeto para outro:
+const novoObjeto = meuObjeto
+
+Mudo o valor de b NESTE OUTRO OBJETO
+novoObjeto.b = 5
+
+Faço uma soma usando o valor de b no primeiro + valor de b no segundo
+console.log(meuObjeto.b + novoObjeto.b)
+
+o resultado dessa soma NAO EH 7 COMO O ESPERADO
+
+quando fazemos
+const novoObjeto = meuObjeto
+
+eu estou passando uma referencia de meuObjeto para novoObjeto,
+sendo assim, quando mudo o valor em novo, tbm mudo no antigo!!!
+
+como quebrar isso?
+const novoObjeto = Object.create(meuObjeto)
+
+pronto, agora passei um clone meuObjeto para novoObjeto, dessa forma,
+mudando o valor em novoObjeto estou mudando o valor do clone, 
+nao do original, e a soma dara 7!
+
+Heranca--------------------------------------------------------------------------------------------
+
+Crio uma funcao SalaAula que recebe um array de alunos e salva esse array na propriedade
+da classe d
+  function SalaAula(alunos){
+    this.alunos = alunos || [];
+  }
+
+Ai usamos o prototype da funcao para poder adicionar novos metodos
+  SalaAula.prototype = {
+    adicionarAluno: function(aluno){
+      this.alunos.push(aluno)
+    },
+    mostraAlunos : function(){
+      return this.alunos;
+    }
+  }
+
+Crio uma outra funcao NovaSala que chama a superclasse SalaAula
+e passo para ela esse obj da nossa nova sala.
+  function NovaSala(){
+    SalaAula.call(this)
+  }
+
+Entao para a funcao NovaSala herdar todos os metodos que a gente tem da funcao SalaAula
+a gente usa o object.create que vai fazer a mescla entre prototype de NovaSala com os
+metodos ja existentes em SalaAula
+  NovaSala.prototype = Object.create(SalaAula.prototype)
+
+Aqui a gente cria um novo obj novaSala:
+  const novaSala = new NovaSala()
+Ou
+  const novaSala = Object.create(NovaSala.prototype)
+Que eh o mesmo que
+  NovaSala extends SalaAula
+
+E isso funciona pela heranca:
+  novaSala.adicionarAluno('João')
+
+  
