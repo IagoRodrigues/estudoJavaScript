@@ -663,7 +663,6 @@ request.onload = function() {
   showHeroes(superHeroes);
 }
 
-
 stringify():
 Criando um objeto JavaScript, em seguida, verificando o que ele contem,
 convertendo-o em uma string JSON usando stringify() — salvando o 
