@@ -397,14 +397,14 @@ function Teacher(first, last, age, gender, interests, subject) {
 }
 
 A funcao call() basicamente permite chamar uma funcao definida em outro lugar, mas no
-contexto atual. O primeiro parâmetro especifica o valor this que você deseja usar ao
-executar a funcao, e os outros parâmetros sao aqueles que devem ser passados para a funcao
-quando ela é invocada. Nós queremos que o construtor Teacher() pegue os mesmos parâmetros 
-que o construtor Person() de onde ele está herdando, então especificamos todos eles como 
-parâmetros na chamada call().
+contexto atual. O primeiro parametro especifica o valor this que você deseja usar ao
+executar a funcao, e os outros parametros sao aqueles que devem ser passados para a funcao
+quando ela eh invocada. Nós queremos que o construtor Teacher() pegue os mesmos parametros 
+que o construtor Person() de onde ele está herdando, Entao especificamos todos eles como 
+parametros na chamada call().
 
 A última linha dentro do construtor simplesmente define a nova propriedade subject que os 
-professores terão, que pessoas genéricas nao possuem.
+professores terão, que pessoas genehricas nao possuem.
 
 Agora precisamos obter Teacher para herdar os metodos definidos em Person, para isso
 fazemos:
@@ -528,7 +528,7 @@ class Person {
 
 greeting() e farewell() sao metodos de classe. Quaisquer metodos que voce deseja
 associar a classe sao definidos dentro dela, apos o construtor. Neste exemplo, usamos
-template literals em vez de concatenacao de string para facilitar a leitura do código.
+template literals em vez de concatenacao de string para facilitar a leitura do codigo.
 
 Para instanciar:
 
@@ -601,3 +601,75 @@ snape.subject="Balloon animals" // Sets _subject to "Balloon animals"
 
 // Check it again and see if it matches the new value
 console.log(snape.subject) // Returns "Balloon animals"
+
+Conversao JSON-------------------------------------------------------------------------------------
+
+Quando o JSON vem 100% pronto:
+
+var requestURL = 'https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json';
+/*
+O comando acima salva a url de onde vamos puxar o JSON
+*/
+
+var request = new XMLHttpRequest();
+/*
+Crio uma variavel request e passo o objeto XMLHttpRequest a ela
+*/
+
+request.open('GET', requestURL);
+/*
+Abro a requisicao passando GET (quero pegar codigo) e a url de onde vou pegar
+*/
+
+request.responseType = 'json';
+/*
+Seleciono que o tipo de resposta da request eh um JSON
+*/
+
+request.send();
+/*
+Envio a request
+*/
+
+request.onload = function() {
+	var superHeroes = request.response;
+	populateHeader(superHeroes);
+	showHeroes(superHeroes);
+}
+/*
+Aqui estamos armazenando a resposta ao nosso pedido (disponivel na propriedade response) 
+em uma variavel chamada superHeroes; essa variavel agora contera o objeto JavaScript com 
+base no JSON! Entao, estamos passando esse objeto para duas chamadas de funcao — a primeira 
+preenchera o <header> com os dados corretos, enquanto a segunda criara uma ficha de 
+informacoes para cada herói da equipe e a inserira na <section>.
+*/
+
+Quando nao vem bom:
+parse(): Aceita uma string JSON como um parametro e retorna o objeto JavaScript correspondente.
+stringify(): Aceita um objeto como um parametro e retorna o formato equivalente de string JSON.
+
+parse():
+Configurarmos o XHR para retornar texto JSON bruto, em seguida, 
+usado parse() para converte-lo em um objeto JavaScript real
+
+request.open('GET', requestURL);
+request.responseType = 'text'; // now we're getting a string!
+request.send();
+
+request.onload = function() {
+  var superHeroesText = request.response; // get the string from the response
+  var superHeroes = JSON.parse(superHeroesText); // convert it to an object
+  populateHeader(superHeroes);
+  showHeroes(superHeroes);
+}
+
+
+stringify():
+Criando um objeto JavaScript, em seguida, verificando o que ele contem,
+convertendo-o em uma string JSON usando stringify() — salvando o 
+valor de retorno em uma nova variavel — e, em seguida, verificando-o novamente.
+
+var myJSON = { "name": "Chris", "age": "38" };
+myJSON
+var myString = JSON.stringify(myJSON);
+myString

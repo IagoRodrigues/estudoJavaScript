@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Our superheroes</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Faster+One" rel="stylesheet">
+    <link rel="stylesheet" href="estiloJson.css">
+</head>
+
+<body>
+
+    <header>
+
+    </header>
+
+    <section>
+
+    </section>
+
+    <script>
+        const header = document.querySelector('header');
+        const section = document.querySelector('section');
+
+        var requestURL = 'https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json';
+        /*
+        O comando acima salva a url de onde vamos puxar o JSON
+        */
+
+        var request = new XMLHttpRequest();
+        /*
+        Crio uma variável request e passo o objeto XMLHttpRequest a ela
+        */
+
+        request.open('GET', requestURL);
+        /*
+        Abro a requisição passando GET (quero pegar código) e a url de onde vou pegar
+        */
+
+        request.responseType = 'json';
+        /*
+        Seleciono que o tipo de resposta da request é um JSON
+        */
+
+        request.send();
+        /*
+        Envio a request
+        */
+
+        request.onload = function() {
+                var superHeroes = request.response;
+                populateHeader(superHeroes);
+                showHeroes(superHeroes);
+            }
+            /*
+            Aqui estamos armazenando a resposta ao nosso pedido (disponível na propriedade response) 
+            em uma variável chamada superHeroes; essa variável agora conterá o objeto JavaScript com 
+            base no JSON! Então, estamos passando esse objeto para duas chamadas de função — a primeira 
+            preencherá o <header> com os dados corretos, enquanto a segunda criará uma ficha de 
+            informações para cada herói da equipe e a inserirá na <section>.
+            */
+
+        function populateHeader(jsonObj) {
+            var myH1 = document.createElement('h1');
+            myH1.textContent = jsonObj['squadName'];
+            header.appendChild(myH1);
+
+            var myPara = document.createElement('p');
+            myPara.textContent = 'Hometown: ' + jsonObj['homeTown'] + ' // Formed: ' + jsonObj['formed'];
+            header.appendChild(myPara);
+        }
+        /*
+        Nós chamamos o parâmetro jsonObj, para nos lembrarmos que esse objeto JavaScript 
+        foi originado do JSON. Aqui, primeiro criamos um elemento <h1> como createElement(),
+        definimos seu textContent para igualar a propriedade squadName do objeto e, em seguida,
+        o adicionamos ao cabeçalho usando appendChild(). Em seguida, fazemos uma operação muito
+        semelhante com um parágrafo: criá-lo, definir seu conteúdo de texto e anexá-lo ao cabeçalho.
+        A única diferença é que seu texto é definido como uma string concatenada contendo as 
+        propriedades homeTown e formed do objeto.
+        */
+
+        function showHeroes(jsonObj) {
+            var heroes = jsonObj['members'];
+
+            for (var i = 0; i < heroes.length; i++) {
+                var myArticle = document.createElement('article');
+                var myH2 = document.createElement('h2');
+                var myPara1 = document.createElement('p');
+                var myPara2 = document.createElement('p');
+                var myPara3 = document.createElement('p');
+                var myList = document.createElement('ul');
+
+                myH2.textContent = heroes[i].name;
+                myPara1.textContent = 'Secret identity: ' + heroes[i].secretIdentity;
+                myPara2.textContent = 'Age: ' + heroes[i].age;
+                myPara3.textContent = 'Superpowers:';
+
+                var superPowers = heroes[i].powers;
+                for (var j = 0; j < superPowers.length; j++) {
+                    var listItem = document.createElement('li');
+                    listItem.textContent = superPowers[j];
+                    myList.appendChild(listItem);
+                }
+
+                myArticle.appendChild(myH2);
+                myArticle.appendChild(myPara1);
+                myArticle.appendChild(myPara2);
+                myArticle.appendChild(myPara3);
+                myArticle.appendChild(myList);
+
+                section.appendChild(myArticle);
+            }
+        }
+        /*
+        armazenamos a propriedade  members do objeto JavaScript 
+        em uma nova variável. Esta matriz contém vários objetos
+        que contêm as informações para cada herói.
+
+        Em seguida usamos um for para percorrer cada objeto da matriz
+
+        Nesse trecho criamos e preenchemos alguns elementos, adicionando
+        todos em uma ordem especifica para dentro de myArticle usando o 
+        comando appendChild.
+
+        O que garante a facilidade do processo é que recebemos um JSON e
+        transformamos em javascript direto, mas nem sempre será tão fácil
+        */
+    </script>
+</body>
+
+</html>
